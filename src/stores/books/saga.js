@@ -6,7 +6,6 @@ import { BookResource } from "services";
 function* getBooks() {
   try {
     const res = yield call(BookResource.GET_MANY);
-    console.log(res.data);
     yield put({
       type: GET_BOOKS_SUCCESS,
       payload: res.data,

@@ -1,29 +1,47 @@
-import { LOGIN, LOGIN_FAILED, LOGIN_SUCCESS } from "./actions";
+import {
+  SET_TOKEN,
+  REGISTER,
+  REGISTER_FAILED,
+  REGISTER_SUCCESS,
+  LOGOUT,
+} from "./actions";
+import {
+  setAuthToken,
+  getAuthToken,
+  removeAuthToken,
+} from "services/cookiesService";
 
 const initState = {
   loading: false,
-  token: null,
+  isAuthenticated: !!getAuthToken(),
 };
 
 export default function (state = initState, action) {
   switch (action.type) {
-    case LOGIN:
+    case SET_TOKEN:
+      setAuthToken(action.token);
+      return {
+        ...state,
+        isAuthenticated: true,
+      };
+
+    case REGISTER:
       return {
         ...state,
         loading: true,
       };
-    case LOGIN_FAILED:
+    case REGISTER_FAILED:
+    case REGISTER_SUCCESS:
       return {
         ...state,
         loading: false,
       };
-    case LOGIN_SUCCESS:
+    case LOGOUT:
+      removeAuthToken();
       return {
         ...state,
-        loading: false,
-        token: action.payload.data,
+        isAuthenticated: false,
       };
-
     default:
       return state;
   }

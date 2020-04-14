@@ -1,15 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Button,
-  Checkbox,
-  Card,
-  Typography,
-} from "antd";
+import { Row, Col, Form, Input, Button, Card, Typography } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { _register } from "services/booksApi";
 

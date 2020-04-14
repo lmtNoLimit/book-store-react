@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   Row,
   Col,
@@ -9,9 +10,14 @@ import {
   Checkbox,
   Card,
   Typography,
+  message,
 } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, LoadingOutlined } from "@ant-design/icons";
+
+import { AuthActions } from "stores/actions";
 import { _login } from "services/booksApi";
+import { useEffect } from "react";
+import { getAuthToken } from "services/cookiesService";
 
 const { Title, Paragraph } = Typography;
 
@@ -21,6 +27,14 @@ const Login = () => {
     password: "",
     remember: false,
   });
+  useEffect(() => {
+    if (!!getAuthToken()) {
+      history.push("/");
+    }
+  });
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleChange = (e) => {
     const target = e.target;
@@ -31,15 +45,15 @@ const Login = () => {
     });
   };
 
-  const onFinish = async (values) => {
-    const { username, password } = user;
+  const onFinish = async (user) => {
     try {
-      const res = await _login({
-        username,
-        password,
-      });
-      console.log(res);
+      setLoading(true);
+      const res = await _login(user);
+      dispatch(AuthActions.setToken(res.data.token));
+      history.push("/");
     } catch (error) {
+      setLoading(false);
+      message.error("Username or password incorrect");
       console.log(error);
     }
   };
@@ -50,7 +64,7 @@ const Login = () => {
       align='middle'
       style={{ minHeight: "100vh", background: "#333" }}
     >
-      <Col span={6}>
+      <Col xs={18} sm={12} lg={6}>
         <Card>
           <Title level={2} align='middle'>
             Login
@@ -58,7 +72,7 @@ const Login = () => {
           <Form
             name='normal_login'
             className='login-form'
-            initialValues={{ remember: true }}
+            initialValues={user}
             onFinish={onFinish}
           >
             <Form.Item
@@ -98,8 +112,8 @@ const Login = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button block type='primary' htmlType='submit'>
-                Log in
+              <Button block type='primary' htmlType='submit' disabled={loading}>
+                {loading ? <LoadingOutlined /> : "Log in"}
               </Button>
               <Paragraph align='middle'>
                 Or <Link to='/register'>register now!</Link>

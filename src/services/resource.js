@@ -1,11 +1,13 @@
 import axios from "axios";
 import { BOOK_API } from "config";
+import { getAuthToken } from "./cookiesService";
 
 export const makeRequest = (req) => {
   return axios({
     ...req,
     headers: {
       ...req.headers,
+      Authorization: `Bearer ${getAuthToken()}`,
     },
   });
 };

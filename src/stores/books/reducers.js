@@ -1,8 +1,14 @@
-import { GET_BOOKS, GET_BOOKS_FAILED, GET_BOOKS_SUCCESS } from "./actions";
+import {
+  GET_BOOKS,
+  GET_BOOKS_FAILED,
+  GET_BOOKS_SUCCESS,
+  ADD_TO_CART,
+} from "./actions";
 
 const initState = {
   loading: false,
   books: [],
+  cart: [],
 };
 
 export default function (state = initState, action) {
@@ -22,9 +28,13 @@ export default function (state = initState, action) {
       return {
         ...state,
         loading: false,
-        books: action.payload.data,
+        books: action.payload,
       };
-
+    case ADD_TO_CART:
+      return {
+        ...state,
+        cart: [...state.cart, action.id],
+      };
     default:
       return state;
   }
